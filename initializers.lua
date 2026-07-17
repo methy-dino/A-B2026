@@ -16,14 +16,15 @@ function Init.start_battle_interface(player, enemies)
 	local total_width_consumed = ref_width * player.max_actions + (player.max_actions - 1)*0.1; 
 	local ref_x = player.character.position.x - total_width_consumed/2 + ref_width/2;
 	local ref_y = player.character.position.y - player_ref_height/2 - ref_height/2 -0.3;
+	for i = enemies.length,1,-1 do
+	 battle_scheduler:add(enemies[i]);
+	 battle_scheduler:add(enemies[i].die);
+	end
 	for i = player.max_actions,1,-1 do
 	 local caixa_teste = Dice_box.new_dice_box(color, box_image);
 	 caixa_teste.position.x = ref_x + 1.1 * ref_width * (i-1);
 	 caixa_teste.position.y = ref_y;
 	 battle_scheduler:add(caixa_teste);
-	end
-	for i = enemies.length,1,-1 do
-	 battle_scheduler:add(enemies[i]);
 	end
 	Player.character.inventory.init_drawer(battle_scheduler);
 	return battle_scheduler;

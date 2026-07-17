@@ -6,7 +6,7 @@ function Player.init(class)
 	Player.character.animation = {};
 	Player.character.type = "player";
 	local image = love.graphics.newImage("player.png");
-	local animation = {}
+	local animation = {};
 	animation.spriteSheet = image;
 	animation.quads = {};
 	local height = 32;
@@ -21,6 +21,8 @@ function Player.init(class)
 	animation.duration = 0.3;
 	animation.currentTime = 0;
 	Player.character.animation = animation;
+	Player.character.maxHealth = 25;
+	Player.character.health = 25;
 	Player.character.position = {};
 	Player.character.position.x = 9;
 	Player.character.position.y = 4.5;
@@ -34,21 +36,24 @@ function Player.init(class)
 	Player.character.inventory.relics = {};
 	Player.character.inventory.interface = {};
 	Player.character.inventory.interface.type = "inventory";
+	local targets = {};
+	targets.length = 1;
+	targets[1] = "enemy";
    local dadopng = love.graphics.newImage("dado.png");cor = {};cor.r = 125/255;cor.g =0;cor.b = 125/255;
 	 faces_tst = {};
 	 faces_tst.length = 4;
 	 	if true then 
 		 local quirks = {};
-		 quirks[1] = Quirks.basic_damage();
+		 quirks[1] = Quirks.basic_damage(targets);
 		 quirks.length = 1;
 		 local quirks4 = {};
-		 quirks4[1] = Quirks.basic_damage();
+		 quirks4[1] = Quirks.basic_damage(targets);
 		 quirks4.length = 1;
 		 local quirks3 = {};
-		 quirks3[1] = Quirks.basic_damage();
+		 quirks3[1] = Quirks.basic_damage(targets);
 		 quirks3.length = 1;
 		 local quirks2 = {};
-		 quirks2[1] = Quirks.basic_damage();
+		 quirks2[1] = Quirks.basic_damage(targets);
 		 quirks2.length = 1;
 		 faces_tst[1] = Dice_utils.new_face(1, quirks);
 		 faces_tst[2] = Dice_utils.new_face(2, quirks2);
@@ -59,16 +64,16 @@ function Player.init(class)
 		 faces_tst2.length = 4;
 	 if true then
 	 local quirks = {};
-	 quirks[1] = Quirks.single_use_damage();
+	 quirks[1] = Quirks.single_use_damage(targets);
 	 quirks.length = 1;
 	 local quirks4 = {};
-	 quirks4[1] = Quirks.single_use_damage();
+	 quirks4[1] = Quirks.single_use_damage(targets);
 	 quirks4.length = 1;
 	 local quirks3 = {};
-	 quirks3[1] = Quirks.single_use_damage();
+	 quirks3[1] = Quirks.single_use_damage(targets);
 	 quirks3.length = 1;
 	 local quirks2 = {};
-	 quirks2[1] = Quirks.single_use_damage();
+	 quirks2[1] = Quirks.single_use_damage(targets);
 	 quirks2.length = 1;
 	 faces_tst2[1] = Dice_utils.new_face(2, quirks);
 	 faces_tst2[2] = Dice_utils.new_face(3, quirks2);
@@ -193,6 +198,10 @@ function Player.character.inventory.init_drawer(sched)
 	local curr_dice = {};
 	for i = 1, Player.character.inventory.dice.length do
 		curr_dice = Player.character.inventory.dice[i];
+		curr_dice.position.x = Player.character.position.x;
+		curr_dice.position.y = Player.character.position.y;
+		--curr_dice.position.x = 0 + (curr_dice.sprite:getWidth()*pixel_size)/(playable_bounds.arena.right-playable_bounds.arena.left)*16;
+		--curr_dice.position.y = (draw_y-playable_bounds.arena.top)/(playable_bounds.arena.bottom-playable_bounds.arena.top)*9;
 		curr_dice.position.origin_y = (draw_y-playable_bounds.arena.top)/(playable_bounds.arena.bottom-playable_bounds.arena.top)*9;
 		curr_dice.position.origin_x = 0 + (curr_dice.sprite:getWidth()*pixel_size)/(playable_bounds.arena.right-playable_bounds.arena.left)*16 * i + 0.80 * i;
 		sched:add(curr_dice);

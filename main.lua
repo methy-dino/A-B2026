@@ -1,6 +1,7 @@
 pixel_size = 4;
 love.graphics.setDefaultFilter("nearest", "nearest")
 Player = require("player");
+Life_bar = require("life_bar");
 Dice_utils = require("dice");
 Dice_box = require("dice_box");
 Scheduler = require("scheduler");
@@ -13,9 +14,24 @@ function love.load()
    image = love.graphics.newImage("cobble.jpg")
 	 root_scheduler = Initializer.game_init();
 	 local enemies = {};
+	 local target = {};
+	 target.length = 1;
+	 target[1] = "player";
+	 local quirks = {};
+	 quirks.length = 1;
+	 quirks[1] = Quirks.basic_damage(target);
+	 local faces = {};
+	 faces.length = 1;
+	 local color = {};
+	 color.r = 0;
+	 color.g = 0;
+	 color.b = 0;
+	 faces[1] = Dice_utils.new_face(1, quirks);
+   local dadopng = love.graphics.newImage("dado.png");
+love.graphics.setDefaultFilter("nearest", "nearest")
+	 local die = Dice_utils.new_enemy_die(faces, color, dadopng);
 	 enemies.length = 1;
-	 enemies[1] = Enemy.new_enemy();
-	 enemies[1]:update(0.1);
+	 enemies[1] = Enemy.new_enemy(die);
 	 root_scheduler:add(Initializer.start_battle_interface(Player, enemies));
 end
 
@@ -26,6 +42,7 @@ end
 
 function love.draw()
 	Drawers.draw_base_interface(true);
+	Drawers.draw_upper_interface();
 	if Combat_lock then
 		love.graphics.print("MODO COMBATE", playable_bounds.left+50, playable_bounds.top+200);
 	end
@@ -41,5 +58,8 @@ end
 function love.keypressed(key)
 	if key == 'c' then
 		Combat_lock = not(Combat_lock);
+	end
+	if key == 'e' then
+		Player.character.health = Player.character.health-1;
 	end
 end

@@ -9,6 +9,7 @@ function Enemy.new_enemy(dice)
 	local animation = {}
 	animation.spriteSheet = image;
 	animation.quads = {};
+	enm.die = dice;
 	local height = 32;
 	local width = 21;
 	enm.sprite_height = height;
