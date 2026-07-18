@@ -1,18 +1,22 @@
--- faces must be: composed of length, face[i].value, face[i].quirks, 
-local Dice = {};
-Dice.die_font = love.graphics.newFont("kiwi.ttf", 60);
-function Dice.new_face(value, quirks) 
-	local face = {};
-	face.value = value;
-	face.quirks = quirks;
-	face.color = {};
+	-- faces must be: composed of length, face[i].value, face[i].quirks, 
+	local Dice = {};
+	Dice.die_font = love.graphics.newFont("kiwi.ttf", 60);
+	function Dice.new_face(value, quirks) 
+		local face = {};
+		face.value = value;
+		face.quirks = quirks;
+		face.color = {};
 	face.color.r = 1;
 	face.color.g = 1;
 	face.color.b = 1;
-	function face.exec(self, entity)
+	function face.exec(self, entity, ...)
 		for i = 1, self.quirks.length do
 			-- acao certa
-			self.quirks[i]:attempt(entity, face);
+			self.quirks[i]:attempt(entity, face, ...);
+		end
+	end
+	function face.reset(self)
+		for i = 1, self.quirks.length do
 			self.quirks[i]:reset();
 		end
 	end
@@ -43,18 +47,27 @@ function Dice.new_enemy_die(faces, color, sprite)
 		if not (i == self.curr_face) then
 			self.curr_face = math.random(1, self.faces.length);
 		end
-		sched:execute(self.faces[self.curr_face],"exec");
+		sched:execute(self.faces[self.curr_face],"exec", self);
 	end	
 	function die.answer_message(self, sender, message) 
+		if (sender.type == "reset") then
+			self.spent = false;
+			for i = 1, self.faces.length do
+				self.faces[i]:reset();
+			end
+		end
+		print("RETURNO FALSO (1");
 		return false;
 	end
 	function die.update(self, dt)
 		if self.has_box then
 			self.acumulated_dt = self.acumulated_dt + dt;
-			if self.acumulated_dt > 0.5 then
-				self.color.r = math.random();
-				self.color.g = math.random();
-				self.color.b = math.random();
+			if self.wait_timer > 0 then
+				if self.wait_timer < self.acumulated_dt then 
+					self.wait_timer = 0;
+					self.acumulated_dt = 0;
+				end
+			elseif self.acumulated_dt > 0.5 then
 				self.curr_face = self.curr_face + math.random(1, self.faces.length-1);
 				if self.curr_face > self.faces.length then
 					self.curr_face = self.curr_face - self.faces.length;
@@ -107,7 +120,6 @@ function Dice.new_enemy_die(faces, color, sprite)
 	function die.answer_mouse_down(self, x, y, button, sched, my_i)
 		if Combat_lock and self.spent == false then
 			self:roll(sched);
-			self.spent = true;
 			return true;
 		end
 		return false;
@@ -128,9 +140,11 @@ end
 function Dice.new_die(faces, color, sprite)
 	local die = {};
 	die.name = "generic die";
+	die.wait_timer = 0;
 	die.faces = faces;
 	die.color = color;
 	die.curr_face = 1;
+	die.spent = false;
 	die.sprite = sprite;
 	die.position = {};
 	die.position.x = 9;
@@ -148,15 +162,25 @@ function Dice.new_die(faces, color, sprite)
 		if not (i == self.curr_face) then
 			self.curr_face = math.random(1, self.faces.length);
 		end
-		sched:execute(self.faces[self.curr_face],"exec");
+		sched:execute(self.faces[self.curr_face],"exec", self);
 	end	
 	function die.answer_message(self, sender, message) 
+		if (sender.type == "reset") then
+			self.spent = false;
+		end
+		print("RETURNO FALSO (2)");
 		return false;
 	end
 	function die.update(self, dt)
 		if self.has_box then
 			self.acumulated_dt = self.acumulated_dt + dt;
-			if self.acumulated_dt > 0.5 then
+			if self.wait_timer > 0 then
+			self.acumulated_dt = self.acumulated_dt + dt;
+			if self.acumulated_dt > self.wait_timer then 
+				self.acumulated_dt = 0;
+				self.wait_timer = 0;
+			end
+		elseif self.acumulated_dt > 0.5 then
 				self.curr_face = self.curr_face + math.random(1, self.faces.length-1);
 				if self.curr_face > self.faces.length then
 					self.curr_face = self.curr_face - self.faces.length;

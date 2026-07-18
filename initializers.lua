@@ -84,6 +84,7 @@ function Init.game_init()
 	print("left = "..playable_bounds.arena.left.."\nright = "..playable_bounds.arena.right);
 	print("top = "..playable_bounds.arena.top.."\nbottom = "..playable_bounds.arena.bottom);
 	print("[ GAME INIT END ]");
+	pixel_size = math.floor((playable_bounds.right-playable_bounds.left)/256 + 0.49);
 	return root_scheduler;
 end
 

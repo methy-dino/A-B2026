@@ -1,4 +1,4 @@
-pixel_size = 4;
+	pixel_size = 4;
 love.graphics.setDefaultFilter("nearest", "nearest")
 Player = require("player");
 Life_bar = require("life_bar");
@@ -50,14 +50,19 @@ function love.draw()
 end
 
 function love.mousepressed(x, y, button, istouch)
-	root_scheduler:answer_mouse_down(x, y, button);
+	if root_scheduler:answer_mouse_down(x, y, button) == false and Combat_lock then 
+		Combat_lock = false;
+	end
 end
 function love.mousereleased(x, y, button, istouch)
 	root_scheduler:answer_mouse_up(x, y, button);
 end
 function love.keypressed(key)
-	if key == 'c' then
-		Combat_lock = not(Combat_lock);
+	if key == 'c' and not Combat_lock then
+		Combat_lock = true;
+		local reset_die = {};
+		reset_die.type = "reset";
+		root_scheduler:message(reset_die, "");
 	end
 	if key == 'e' then
 		Player.character.health = Player.character.health-1;

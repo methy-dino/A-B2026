@@ -28,6 +28,7 @@ function Enemy.new_enemy(dice)
 	enm.sprite_time = 0;
 	enm.facing = -1;
 	function enm.answer_message(self, sender, message) 
+		print("HUH")
 		return false;
 	end
 	function enm.draw(self)

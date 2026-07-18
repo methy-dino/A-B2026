@@ -21,10 +21,12 @@ function Dice_box.new_dice_box(color, sprite)
 	function dice_box.answer_mouse_down(self, x, y, button, sched, my_i)
 		if Combat_lock and self.has_dice_inside then
 			self.dice:roll(sched);
-			self.has_dice_inside = false;
-			self.dice.has_box = false;
-			self.dice.box = nil;
-			self.dice = nil;
+			if (self.dice.spent == true) then
+				self.has_dice_inside = false;
+				self.dice.has_box = false;
+				self.dice.box = nil;
+				self.dice = nil;
+			end
 			return true;
 		else
 			local dice_box_x = math.floor(playable_bounds.arena.left + (self.position.x/16)*(playable_bounds.arena.right-playable_bounds.arena.left)-self.sprite:getWidth()*pixel_size/2);

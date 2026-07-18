@@ -44,16 +44,16 @@ function Player.init(class)
 	 faces_tst.length = 4;
 	 	if true then 
 		 local quirks = {};
-		 quirks[1] = Quirks.basic_damage(targets);
+		 quirks[1] = Quirks.damage_and_reroll(targets, 1);
 		 quirks.length = 1;
 		 local quirks4 = {};
-		 quirks4[1] = Quirks.basic_damage(targets);
+		 quirks4[1] = Quirks.damage_and_reroll(targets, 1);
 		 quirks4.length = 1;
 		 local quirks3 = {};
-		 quirks3[1] = Quirks.basic_damage(targets);
+		 quirks3[1] = Quirks.damage_and_reroll(targets, 1);
 		 quirks3.length = 1;
 		 local quirks2 = {};
-		 quirks2[1] = Quirks.basic_damage(targets);
+		 quirks2[1] = Quirks.damage_and_reroll(targets, 1);
 		 quirks2.length = 1;
 		 faces_tst[1] = Dice_utils.new_face(1, quirks);
 		 faces_tst[2] = Dice_utils.new_face(2, quirks2);
@@ -103,9 +103,6 @@ function Player.init(class)
 	end
 	 Player.character.inventory.dice[1] = dado_teste;
 	 Player.character.inventory.dice[2] = dado_teste2;
-end
-function Player.character.answer_message(self, sender, message) 
-	return false;
 end
 function Player.character.draw()
 	love.graphics.setColor(255, 255, 255);

@@ -46,6 +46,11 @@ function Scheduler.new_scheduler()
 		local retorno = false;
 		while i > 0 and retorno == false do
 			retorno = self.entities[i]:answer_message(sender, message);
+			if retorno == true then
+
+			print("i="..i);
+			end
+			--print("type="..self.entities[i].name);
 			i = i - 1;
 		end
 		return retorno;
@@ -54,6 +59,7 @@ function Scheduler.new_scheduler()
 		local i = self.entities.length;
 		local retorno = false;
 		while i > 0 and retorno == false do
+			print("i="..i);
 			retorno = self.entities[i]:answer_message(sender, message);
 			i = i - 1;
 		end
@@ -76,10 +82,10 @@ function Scheduler.new_scheduler()
 	end
 		self.entities[new_ind] = tmp;
 	end
-	function sched.execute(self, caller, fn_name)
+	function sched.execute(self, caller, fn_name,...)
 		local i = self.entities.length;
 		while i > 0 do
-			caller[fn_name](caller, self.entities[i]);
+			caller[fn_name](caller, self.entities[i], ...);
 			i = i - 1;
 		end
 	end
