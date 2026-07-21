@@ -87,5 +87,12 @@ function Init.game_init()
 	pixel_size = math.floor((playable_bounds.right-playable_bounds.left)/256 + 0.49);
 	return root_scheduler;
 end
+function Init.new_color(r, g, b)
+	local ret = {};
+	ret.r = r;
+	ret.g = g;
+	ret.b = b;
+	return ret;
+end
 
 return Init;

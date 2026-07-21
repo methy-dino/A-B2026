@@ -17,16 +17,14 @@ function love.load()
 	 local target = {};
 	 target.length = 1;
 	 target[1] = "player";
-	 local quirks = {};
-	 quirks.length = 1;
-	 quirks[1] = Quirks.basic_damage(target);
 	 local faces = {};
-	 faces.length = 1;
+	 faces.length = 2;
 	 local color = {};
-	 color.r = 0;
+	 color.r = 1;
 	 color.g = 0;
 	 color.b = 0;
-	 faces[1] = Dice_utils.new_face(1, quirks);
+	 faces[1] = Dice_utils.new_face(2, Quirks.basic_damage(target));
+	 faces[2] = Dice_utils.new_face(1, Quirks.basic_damage(target));
    local dadopng = love.graphics.newImage("dado.png");
 love.graphics.setDefaultFilter("nearest", "nearest")
 	 local die = Dice_utils.new_enemy_die(faces, color, dadopng);

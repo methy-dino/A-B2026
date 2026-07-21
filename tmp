@@ -2,24 +2,6 @@ local Quirks = {};
 Quirks.sprites= {};
 Quirks.sprites.sheet = love.graphics.newImage("quirks.png")
 Quirks.sprites.basic_damage = love.graphics.newQuad(0, 0, 16, 16, Quirks.sprites.sheet:getDimensions());
-Quirks.sprites.single_use_damage = love.graphics.newQuad(16, 0, 16, 16, Quirks.sprites.sheet:getDimensions());
-Quirks.sprites.single_use_damage_spent = love.graphics.newQuad(32, 0, 16, 16, Quirks.sprites.sheet:getDimensions());
-Quirks.sprites.reroll_bg = love.graphics.newQuad(0, 80, 16, 16, Quirks.sprites.sheet:getDimensions());
-function Quirks.draw_value(die_x, die_y, value) 
-			local add_x = 12;
-			local add_y = 13;
-		love.graphics.setColor(0.5,0.5,0.5);
-			while value >= 5 do
-			love.graphics.rectangle("fill", die_x+pixel_size*add_x, die_y+pixel_size*add_y-pixel_size*2,pixel_size*2, pixel_size*3);
-			add_y = add_y - 4;
-			value = value - 5;
-			end
-			while value > 0 do
-			love.graphics.rectangle("fill", die_x+pixel_size*add_x, die_y+pixel_size*add_y,pixel_size*2, pixel_size);
-			add_y = add_y - 2;
-			value = value - 1;
-		end
-end
 function Quirks.basic_damage(targets)
 	local tmp = {};
 	tmp.activations = 1;
@@ -43,9 +25,8 @@ function Quirks.basic_damage(targets)
 			self.activations = self.initial_activations;
 		end
 		function tmp.draw(self, die_x, die_y, face) 
-			love.graphics.setColor(1,1,1);
 			love.graphics.draw(Quirks.sprites.sheet, Quirks.sprites.basic_damage, die_x, die_y,0,pixel_size, pixel_size);
-			Quirks.draw_value(die_x, die_y, face.value);
+			love.graphics.rectangle("fill", die_x+pixel_size*12, die_y+pixel_size,pixel_size, pixel_size);
 		end
  return tmp;
  end
@@ -76,15 +57,7 @@ function Quirks.single_use_damage(targets)
 		function tmp.hard_reset(self)
 			self.uses = self.initial_uses;
 		end
-		function tmp.draw(self, die_x, die_y, face) 
-			if self.uses > 0 then
-			love.graphics.setColor(1,1,1);
-			love.graphics.draw(Quirks.sprites.sheet, Quirks.sprites.single_use_damage, die_x, die_y,0,pixel_size, pixel_size);
-		else
-			love.graphics.setColor(0.6,0.6,0.6);
-			love.graphics.draw(Quirks.sprites.sheet, Quirks.sprites.single_use_damage_spent, die_x, die_y,0,pixel_size, pixel_size);
-		end
-			Quirks.draw_value(die_x, die_y, face.value);
+		function tmp.draw(self, dice) 
 		end
  return tmp;
 end

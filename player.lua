@@ -1,6 +1,6 @@
-local Player = {};
-Player.character = {};
-Player.character.inventory = {};
+	local Player = {};
+	Player.character = {};
+	Player.character.inventory = {};
 -- 1 pixel do sprite == 4 pixeis da imagem
 function Player.init(class)
 	Player.character.animation = {};
@@ -32,6 +32,7 @@ function Player.init(class)
 	Player.character.sprite_time = 0;
 	Player.character.facing = 1;
 	Player.character.inventory.dice = {};
+	--Player.character.inventory.dice.length = 3;
 	Player.character.inventory.dice.length = 2;
 	Player.character.inventory.relics = {};
 	Player.character.inventory.interface = {};
@@ -39,49 +40,13 @@ function Player.init(class)
 	local targets = {};
 	targets.length = 1;
 	targets[1] = "enemy";
-   local dadopng = love.graphics.newImage("dado.png");cor = {};cor.r = 125/255;cor.g =0;cor.b = 125/255;
-	 faces_tst = {};
-	 faces_tst.length = 4;
-	 	if true then 
-		 local quirks = {};
-		 quirks[1] = Quirks.damage_and_reroll(targets, 1);
-		 quirks.length = 1;
-		 local quirks4 = {};
-		 quirks4[1] = Quirks.damage_and_reroll(targets, 1);
-		 quirks4.length = 1;
-		 local quirks3 = {};
-		 quirks3[1] = Quirks.damage_and_reroll(targets, 1);
-		 quirks3.length = 1;
-		 local quirks2 = {};
-		 quirks2[1] = Quirks.damage_and_reroll(targets, 1);
-		 quirks2.length = 1;
-		 faces_tst[1] = Dice_utils.new_face(1, quirks);
-		 faces_tst[2] = Dice_utils.new_face(2, quirks2);
-		 faces_tst[3] = Dice_utils.new_face(3, quirks3);
-		 faces_tst[4] = Dice_utils.new_face(4, quirks4);
-	 end
-		 faces_tst2 = {};
-		 faces_tst2.length = 4;
-	 if true then
-	 local quirks = {};
-	 quirks[1] = Quirks.single_use_damage(targets);
-	 quirks.length = 1;
-	 local quirks4 = {};
-	 quirks4[1] = Quirks.single_use_damage(targets);
-	 quirks4.length = 1;
-	 local quirks3 = {};
-	 quirks3[1] = Quirks.single_use_damage(targets);
-	 quirks3.length = 1;
-	 local quirks2 = {};
-	 quirks2[1] = Quirks.single_use_damage(targets);
-	 quirks2.length = 1;
-	 faces_tst2[1] = Dice_utils.new_face(2, quirks);
-	 faces_tst2[2] = Dice_utils.new_face(3, quirks2);
-	 faces_tst2[3] = Dice_utils.new_face(3, quirks3);
-	 faces_tst2[4] = Dice_utils.new_face(5, quirks4);
- end
-	 local dado_teste = Dice_utils.new_die(faces_tst, cor, dadopng);
-	 local dado_teste2 = Dice_utils.new_die(faces_tst2, cor, dadopng);
+	 faces_tst = Dice_utils.new_face_arr(4, 1, Quirks.single_use_damage(targets), 2, Quirks.single_use_damage(targets), 9, Quirks.single_use_damage(targets), 12, Quirks.single_use_damage(targets));
+   local dadopng = love.graphics.newImage("dado.png");
+	 local dado_teste = Dice_utils.new_die(faces_tst, Initializer.new_color(1,1,1), dadopng);
+	 faces_tst3 = Dice_utils.new_face_arr(4, 1, Quirks.basic_damage(targets), 2, Quirks.basic_damage(targets), 5, Quirks.basic_damage(targets), 6, Quirks.basic_damage(targets));
+	 local dado_teste3 = Dice_utils.new_die(faces_tst3, Initializer.new_color(1,1,1), dadopng);
+	 Player.character.inventory.dice[1] = dado_teste;
+	 Player.character.inventory.dice[2] = dado_teste3;
 	function Player.character.inventory.interface.draw()
 		love.graphics.setColor(255, 255, 255);
 		local start_x = playable_bounds.arena.left;
@@ -101,8 +66,6 @@ function Player.init(class)
 	end
 	function Player.character.inventory.interface.update(dt)
 	end
-	 Player.character.inventory.dice[1] = dado_teste;
-	 Player.character.inventory.dice[2] = dado_teste2;
 end
 function Player.character.draw()
 	love.graphics.setColor(255, 255, 255);
