@@ -1,4 +1,3 @@
-	pixel_size = 4;
 love.graphics.setDefaultFilter("nearest", "nearest")
 Player = require("player");
 Life_bar = require("life_bar");
@@ -11,26 +10,11 @@ Enemy = require("enemy");
 Combat_lock = false;
 Drawers = require("drawers");
 function love.load()
+math.randomseed(os.time())
+		love.graphics.setDefaultFilter("nearest", "nearest")
    image = love.graphics.newImage("cobble.jpg")
 	 root_scheduler = Initializer.game_init();
-	 local enemies = {};
-	 local target = {};
-	 target.length = 1;
-	 target[1] = "player";
-	 local faces = {};
-	 faces.length = 2;
-	 local color = {};
-	 color.r = 1;
-	 color.g = 0;
-	 color.b = 0;
-	 faces[1] = Dice_utils.new_face(2, Quirks.basic_damage(target));
-	 faces[2] = Dice_utils.new_face(1, Quirks.basic_damage(target));
-   local dadopng = love.graphics.newImage("dado.png");
-love.graphics.setDefaultFilter("nearest", "nearest")
-	 local die = Dice_utils.new_enemy_die(faces, color, dadopng);
-	 enemies.length = 1;
-	 enemies[1] = Enemy.new_enemy(die);
-	 root_scheduler:add(Initializer.start_battle_interface(Player, enemies));
+	 root_scheduler:add(Initializer.main_menu());
 end
 
 
@@ -50,6 +34,9 @@ end
 function love.mousepressed(x, y, button, istouch)
 	if root_scheduler:answer_mouse_down(x, y, button) == false and Combat_lock then 
 		Combat_lock = false;
+		local reset_die = {};
+		reset_die.type = "reset";
+		root_scheduler:message(reset_die, "");
 	end
 end
 function love.mousereleased(x, y, button, istouch)
@@ -61,8 +48,5 @@ function love.keypressed(key)
 		local reset_die = {};
 		reset_die.type = "reset";
 		root_scheduler:message(reset_die, "");
-	end
-	if key == 'e' then
-		Player.character.health = Player.character.health-1;
 	end
 end

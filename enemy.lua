@@ -3,15 +3,17 @@ local Enemy = {};
 function Enemy.new_enemy(dice)
 	local enm = {};
 	enm.animation = {};
+	enm.shield = 0;
 	enm.health = 20;
+	enm.maxHealth = 20;
 	enm.type = "enemy";
 	local image = love.graphics.newImage("player.png");
 	local animation = {}
 	animation.spriteSheet = image;
 	animation.quads = {};
 	enm.die = dice;
-	local height = 32;
-	local width = 21;
+	local height = 20;
+	local width = 13;
 	enm.sprite_height = height;
 	enm.sprite_width = width;
 	for y = 0, image:getHeight() - height, height do
@@ -25,10 +27,13 @@ function Enemy.new_enemy(dice)
 	enm.position = {};
 	enm.position.x = 9;
 	enm.position.y = 4.5;
+	dice.position.x = 9;
+	dice.position.y = 4.5 - enm.sprite_height*pixel_size;
+	dice.position.origin_x = 9;
+	dice.position.origin_y = 4.5 - (image:getHeight()*pixel_size)/(playable_bounds.arena.right-playable_bounds.arena.left)*16;
 	enm.sprite_time = 0;
 	enm.facing = -1;
 	function enm.answer_message(self, sender, message) 
-		print("HUH")
 		return false;
 	end
 	function enm.draw(self)

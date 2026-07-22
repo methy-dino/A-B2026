@@ -3,12 +3,24 @@ function Scheduler.new_scheduler()
 	local sched = {};
 	sched.entities = {};
 	sched.entities.length = 0;
+	sched.index = -1;
+	sched.parent = nil;
 	function sched.update(self, dt)
 		local i = self.entities.length;
 		while i > 0 do
 			self.entities[i]:update(dt);
 			i = i - 1;
 		end
+	end
+	function sched.discard(self)
+		self.parent:remove(self.index);
+	end
+	function sched.remove(self, i) 
+		while i < self.entities.length do
+			self.entities[i] = self.entities[i+1];
+			i = i + 1;
+		end
+		self.entities.length = self.entities.length - 1;
 	end
 	function sched.answer_mouse_down(self, x, y, button)
 		local i = self.entities.length;
@@ -40,6 +52,8 @@ function Scheduler.new_scheduler()
 	function sched.add(self, entity) 
 		self.entities.length = self.entities.length + 1;
 		self.entities[self.entities.length] = entity;
+		self.entities[self.entities.length].parent = self;
+		self.entities[self.entities.length].index = self.entities.length;
 	end
 	function sched.answer_message(self, sender, message) 
 		local i = self.entities.length;

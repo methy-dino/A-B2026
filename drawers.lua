@@ -39,6 +39,6 @@ function Drawers.draw_upper_interface(references)
 	local hp_start_y = height/2-hp_height/2;
 	Drawers.life_bar.x = playable_bounds.hud.left + 3*pixel_size;
 	Drawers.life_bar.y = playable_bounds.hud.top + 3*pixel_size;
-	Drawers.life_bar:draw(Player.character.maxHealth, Player.character.health);
+	Drawers.life_bar:draw(Player.character.maxHealth, Player.character.health, Player.character.shield);
 end
 return Drawers;

@@ -1,7 +1,16 @@
 	-- faces must be: composed of length, face[i].value, face[i].quirks, 
 	local Dice = {};
 	Dice.die_font = love.graphics.newFont("kiwi.ttf", 60);
-	function Dice.new_face(value, quirk) 
+function Dice.random_face(min_val, max_val, targets)
+	local value = math.random(min_val, max_val);
+	local quirk = Quirks.quirks[math.random(1,Quirks.quirks.length)](targets);
+	local has_subquirk = math.random();
+	if has_subquirk > 0.66 then
+		quirk = Quirks.subquirks[math.random(1,Quirks.subquirks.length)](quirk, math.random(1,3));
+	end
+	return value, quirk;
+end
+function Dice.new_face(value, quirk) 
 		local face = {};
 		face.value = value;
 		face.quirk = quirk;
@@ -30,6 +39,7 @@ end
 function Dice.new_enemy_die(faces, color, sprite)
 	local die = {};
 	die.name = "generic enemy die";
+	die.wait_timer = 0;
 	die.faces = faces;
 	die.color = color;
 	die.curr_face = 1;
@@ -53,19 +63,23 @@ function Dice.new_enemy_die(faces, color, sprite)
 		end
 		sched:execute(self.faces[self.curr_face],"exec", self);
 	end	
+	function die.reset(self)
+		for i = 1, self.faces.length do
+			self.faces[i]:reset();
+		end
+	end
 	function die.answer_message(self, sender, message) 
 		if (sender.type == "reset") then
 			self.spent = false;
-			for i = 1, self.faces.length do
-				self.faces[i]:reset();
-			end
+			self:reset();
 		end
-		print("RETURNO FALSO (1");
 		return false;
 	end
 	function die.update(self, dt)
-		if self.has_box then
+		if true then
+		if not self.spent then
 			self.acumulated_dt = self.acumulated_dt + dt;
+		end
 			if self.wait_timer > 0 then
 				if self.wait_timer < self.acumulated_dt then 
 					self.wait_timer = 0;
@@ -129,7 +143,11 @@ function Dice.new_enemy_die(faces, color, sprite)
 		return false;
 	end
 	function die.draw(self) 
+		if self.spent then
+		love.graphics.setColor(self.color.r*0.6, self.color.g*0.6, self.color.b*0.6);
+	else 
 		love.graphics.setColor(self.color.r, self.color.g, self.color.b);
+	end
 		local die_x = math.floor(playable_bounds.arena.left + (self.position.x/16)*(playable_bounds.arena.right-playable_bounds.arena.left)-self.sprite:getWidth()*pixel_size/2);
 		local die_y = math.floor(playable_bounds.arena.top + (self.position.y/9)*(playable_bounds.arena.bottom-playable_bounds.arena.top));
 		love.graphics.draw(self.sprite, die_x, die_y-self.sprite:getHeight()*pixel_size/2,0,pixel_size,pixel_size);
@@ -167,9 +185,17 @@ function Dice.new_die(faces, color, sprite)
 		end
 		sched:execute(self.faces[self.curr_face],"exec", self);
 	end	
+	function die.reset(self)
+		for i = 1, self.faces.length do
+			self.faces[i]:reset();
+		end
+	end
 	function die.answer_message(self, sender, message) 
 		if (sender.type == "reset") then
 			self.spent = false;
+			for i = 1, self.faces.length do
+				self.faces[i]:reset();
+			end
 		end
 		print("RETURNO FALSO (2)");
 		return false;

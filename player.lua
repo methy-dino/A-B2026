@@ -9,8 +9,8 @@ function Player.init(class)
 	local animation = {};
 	animation.spriteSheet = image;
 	animation.quads = {};
-	local height = 32;
-	local width = 21;
+	local height = 20;
+	local width = 13;
 	Player.character.sprite_height = height;
 	Player.character.sprite_width = width;
 	for y = 0, image:getHeight() - height, height do
@@ -23,6 +23,7 @@ function Player.init(class)
 	Player.character.animation = animation;
 	Player.character.maxHealth = 25;
 	Player.character.health = 25;
+	Player.character.shield = 0;
 	Player.character.position = {};
 	Player.character.position.x = 9;
 	Player.character.position.y = 4.5;
@@ -40,13 +41,16 @@ function Player.init(class)
 	local targets = {};
 	targets.length = 1;
 	targets[1] = "enemy";
-	 faces_tst = Dice_utils.new_face_arr(4, 1, Quirks.single_use_damage(targets), 2, Quirks.single_use_damage(targets), 9, Quirks.single_use_damage(targets), 12, Quirks.single_use_damage(targets));
+	local targets2 = {};
+	targets2.length = 1;
+	targets2[1] = "player";
+	 faces_tst = Dice_utils.new_face_arr(4, 1, Quirks.reroll_subquirk(Quirks.single_use_damage(targets),1), 2, Quirks.reroll_subquirk(Quirks.single_use_damage(targets),1), 9, Quirks.single_use_damage(targets), 12, Quirks.single_use_damage(targets));
    local dadopng = love.graphics.newImage("dado.png");
 	 local dado_teste = Dice_utils.new_die(faces_tst, Initializer.new_color(1,1,1), dadopng);
-	 faces_tst3 = Dice_utils.new_face_arr(4, 1, Quirks.basic_damage(targets), 2, Quirks.basic_damage(targets), 5, Quirks.basic_damage(targets), 6, Quirks.basic_damage(targets));
-	 local dado_teste3 = Dice_utils.new_die(faces_tst3, Initializer.new_color(1,1,1), dadopng);
+	 local dado_teste2 = Dice_utils.new_die(Dice_utils.new_face_arr(2, 2, Quirks.reroll_subquirk(Quirks.basic_shield(targets2),1), 3, Quirks.basic_shield(targets2), 1), Initializer.new_color(1,1,1), dadopng);
 	 Player.character.inventory.dice[1] = dado_teste;
 	 Player.character.inventory.dice[2] = dado_teste3;
+	 Player.character.inventory.dice[2] = dado_teste2;
 	function Player.character.inventory.interface.draw()
 		love.graphics.setColor(255, 255, 255);
 		local start_x = playable_bounds.arena.left;

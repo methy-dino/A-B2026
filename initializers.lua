@@ -1,4 +1,55 @@
 local Init = {};
+	Init.font = love.graphics.newFont("kiwi.ttf", 60);
+	Init.global_hardness = 1;
+function Init.new_battle(hardness)
+	 local enemies = {};
+	 local target = {};
+	 local ret = {};
+	if hardness == 1 then
+	 target.length = 1;
+	 target[1] = "player";
+	 local faces = {};
+	 faces.length = 2;
+	 local color = {};
+	 color.r = 1;
+	 color.g = 0;
+	 color.b = 0;
+	 faces[1] = Dice_utils.new_face(2, Quirks.basic_damage(target));
+	 local valor, quirk = Dice_utils.random_face(1, 6, target);
+	 faces[2] = Dice_utils.new_face(valor, quirk);
+   local dadopng = love.graphics.newImage("dado.png");
+	 local die = Dice_utils.new_enemy_die(faces, color, dadopng);
+	 enemies.length = 1;
+	 enemies[1] = Enemy.new_enemy(die);
+	 ret = Init.start_battle_interface(Player, enemies);
+	end
+	if hardness == 2 then
+	end
+	if hardness == 3 then
+	end
+	if hardness == 4 then
+	end
+	if hardness == 5 then
+	else 
+		print("PARABENS SEU MERDINHA");
+	end
+	return ret;
+end
+function Init.main_menu()
+	local menu_scheduler = Scheduler.new_scheduler();
+	function menu_scheduler.draw(self) 
+		love.graphics.clear(0,0,0);
+		love.graphics.setFont(Init.font);
+		love.graphics.setColor(1,1,1);
+		love.graphics.printf("clique para começar", playable_bounds.left, math.floor((playable_bounds.top+playable_bounds.bottom)/2-Init.font:getHeight()/2), playable_bounds.right-playable_bounds.left, "center");
+	end
+	function menu_scheduler.answer_mouse_down(self, x, y, button)
+		self:discard();
+		self.parent:add(Init.new_battle(Init.global_hardness));
+		Init.global_hardness = 2;
+	end
+	return menu_scheduler;
+end
 function Init.start_battle_interface(player, enemies)
 	local battle_scheduler = Scheduler.new_scheduler(); 
 	player.character.position.x = 3;
