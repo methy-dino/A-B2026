@@ -12,6 +12,9 @@ function Dice_box.new_dice_box(color, sprite)
 	dice_box.position.y = 4.5;
 	dice_box.has_dice_inside = false;
 	dice_box.dice = nil;
+	function dice_box.answer_key_down(self, key)
+		return false;
+	end
 	function dice_box.update(self, dt)
 		return false;
 	end

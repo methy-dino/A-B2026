@@ -4,24 +4,33 @@ local Init = {};
 function Init.new_battle(hardness)
 	 local enemies = {};
 	 local target = {};
-	 local ret = {};
-	if hardness == 1 then
 	 target.length = 1;
 	 target[1] = "player";
+	 local def_target = {};
+	 def_target.length = 1;
+	 def_target[1] = "enemy";
+	 local ret = {};
+	if hardness == 1 then
 	 local faces = {};
-	 faces.length = 2;
+	 faces.length = 4;
 	 local color = {};
 	 color.r = 1;
 	 color.g = 0;
 	 color.b = 0;
-	 faces[1] = Dice_utils.new_face(2, Quirks.basic_damage(target));
-	 local valor, quirk = Dice_utils.random_face(1, 6, target);
+	 local valor, quirk = Dice_utils.random_face(1, 3, target, def_target);
+	 faces[1] = Dice_utils.new_face(valor, quirk);
+	 valor, quirk = Dice_utils.random_face(1, 2, target, def_target);
 	 faces[2] = Dice_utils.new_face(valor, quirk);
+	 valor, quirk = Dice_utils.random_face(1, 5, target, def_target);
+	 faces[3] = Dice_utils.new_face(valor, quirk);
+	 valor, quirk = Dice_utils.random_face(2, 4, target, def_target);
+	 faces[4] = Dice_utils.new_face(valor, quirk);
    local dadopng = love.graphics.newImage("dado.png");
 	 local die = Dice_utils.new_enemy_die(faces, color, dadopng);
 	 enemies.length = 1;
-	 enemies[1] = Enemy.new_enemy(die);
+	 enemies[1] = Enemy.new_enemy(die, "enemy.png");
 	 ret = Init.start_battle_interface(Player, enemies);
+	 Music:swap(Music.enemy);
 	end
 	if hardness == 2 then
 	end

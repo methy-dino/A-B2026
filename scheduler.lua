@@ -22,6 +22,17 @@ function Scheduler.new_scheduler()
 		end
 		self.entities.length = self.entities.length - 1;
 	end
+	function sched.answer_key_down(self, key)
+		local i = self.entities.length;
+		used = {};
+		local retorno = false;
+		while i > 0 and retorno == false do
+			print(i);
+			retorno = self.entities[i]:answer_key_down(key, self, i);
+			i = i - 1;
+		end
+		return retorno;
+	end
 	function sched.answer_mouse_down(self, x, y, button)
 		local i = self.entities.length;
 		used = {};

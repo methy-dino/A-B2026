@@ -1,9 +1,13 @@
 	-- faces must be: composed of length, face[i].value, face[i].quirks, 
 	local Dice = {};
 	Dice.die_font = love.graphics.newFont("kiwi.ttf", 60);
-function Dice.random_face(min_val, max_val, targets)
+	Dice.rollsound = love.audio.newSource("diceroll.mp3", "stream");
+function Dice.random_face(min_val, max_val, targets, def_targets)
 	local value = math.random(min_val, max_val);
 	local quirk = Quirks.quirks[math.random(1,Quirks.quirks.length)](targets);
+	if quirk.type == "defensive" then
+		quirk.targets = def_targets;
+	end
 	local has_subquirk = math.random();
 	if has_subquirk > 0.66 then
 		quirk = Quirks.subquirks[math.random(1,Quirks.subquirks.length)](quirk, math.random(1,3));
@@ -51,6 +55,7 @@ function Dice.new_enemy_die(faces, color, sprite)
 	die.position.origin_y = 4.5;
 	die.has_click_focus = false;
 	die.type = "dice";
+	die.owner = nil;
 	die.has_box = false;
 	die.box = nil;
 	die.spent = false;
@@ -61,12 +66,16 @@ function Dice.new_enemy_die(faces, color, sprite)
 		if not (i == self.curr_face) then
 			self.curr_face = math.random(1, self.faces.length);
 		end
+		Dice.rollsound:play();
 		sched:execute(self.faces[self.curr_face],"exec", self);
 	end	
 	function die.reset(self)
 		for i = 1, self.faces.length do
 			self.faces[i]:reset();
 		end
+	end
+	function die.answer_key_down(self, key)
+		return false;
 	end
 	function die.answer_message(self, sender, message) 
 		if (sender.type == "reset") then
@@ -161,6 +170,7 @@ end
 function Dice.new_die(faces, color, sprite)
 	local die = {};
 	die.name = "generic die";
+	die.owner = nil;
 	die.wait_timer = 0;
 	die.faces = faces;
 	die.color = color;
@@ -183,6 +193,7 @@ function Dice.new_die(faces, color, sprite)
 		if not (i == self.curr_face) then
 			self.curr_face = math.random(1, self.faces.length);
 		end
+		Dice.rollsound:play();
 		sched:execute(self.faces[self.curr_face],"exec", self);
 	end	
 	function die.reset(self)
@@ -279,6 +290,23 @@ function Dice.new_die(faces, color, sprite)
 				self.original_ind = my_i;
 				self.has_click_focus = true;
 				sched:move(my_i, sched.entities.length); 	
+	end
+	function die.answer_key_down(self, key)
+		if (not Combat_lock) and key == 'e' then
+		local die_x = math.floor(playable_bounds.arena.left + (self.position.x/16)*(playable_bounds.arena.right-playable_bounds.arena.left)-self.sprite:getWidth()*pixel_size/2);
+		local die_y = math.floor(playable_bounds.arena.top + (self.position.y/9)*(playable_bounds.arena.bottom-playable_bounds.arena.top)-self.sprite:getHeight()*pixel_size/2);
+		local x, y = love.mouse.getPosition();
+		if y >= die_y and y <= die_y + self.sprite:getHeight()*pixel_size then
+			if x >= die_x and x <= die_x + self.sprite:getWidth()*pixel_size then
+			self.curr_face = self.curr_face + 1;
+			if self.curr_face > self.faces.length then
+				self.curr_face = 1;
+			end
+			return true;
+		end
+	end
+		end
+		return false;
 	end
 	function die.answer_mouse_down(self, x, y, button, sched, my_i)
 		if Combat_lock then

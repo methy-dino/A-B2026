@@ -1,13 +1,15 @@
 local Enemy = {};
 -- 1 pixel do sprite == 4 pixeis da imagem
-function Enemy.new_enemy(dice)
+function Enemy.new_enemy(dice, image_name)
 	local enm = {};
+	dice.owner = enm;
 	enm.animation = {};
 	enm.shield = 0;
 	enm.health = 20;
+	enm.index = 0;
 	enm.maxHealth = 20;
 	enm.type = "enemy";
-	local image = love.graphics.newImage("player.png");
+	local image = love.graphics.newImage(image_name);
 	local animation = {}
 	animation.spriteSheet = image;
 	animation.quads = {};
@@ -26,6 +28,7 @@ function Enemy.new_enemy(dice)
 	enm.animation = animation;
 	enm.position = {};
 	enm.position.x = 9;
+	enm.parent = nil;
 	enm.position.y = 4.5;
 	dice.position.x = 9;
 	dice.position.y = 4.5 - enm.sprite_height*pixel_size;
@@ -38,7 +41,7 @@ function Enemy.new_enemy(dice)
 	end
 	function enm.draw(self)
 		if self.health > 0 then
-		love.graphics.setColor(255, 0, 0);
+		love.graphics.setColor(1, 1, 1);
 		local char_x = playable_bounds.arena.left + (self.position.x/16)*(playable_bounds.arena.right-playable_bounds.arena.left)-self.sprite_width*pixel_size/2;
 		local char_y = playable_bounds.arena.top + (self.position.y/9)*(playable_bounds.arena.bottom-playable_bounds.arena.top)-self.sprite_height*pixel_size/2;
 		if self.animation.currentTime > 0.4 then
@@ -50,11 +53,18 @@ else
 	char_x = playable_bounds.arena.left + (self.position.x/16)*(playable_bounds.arena.right-playable_bounds.arena.left)+self.sprite_width*pixel_size/2;
 	love.graphics.draw(self.animation.spriteSheet, self.animation.quads[math.floor(self.animation.currentTime/self.animation.duration+1)],char_x, char_y,0,-4,4);
 		love.graphics.setColor(0, 0, 0);
-		love.graphics.print(self.health.."/20", char_x, char_y);
+		if self.shield > 0 then 
+			love.graphics.print(self.health.."+"..self.shield.."/20", char_x, char_y);
+		else
+			love.graphics.print(self.health.."/20", char_x, char_y);
+		end
 end
 end
 	end
 
+	function enm.answer_key_down(self, key)
+		return false;
+	end
 	function enm.answer_mouse_up(self, x, y, button)
 		return false;
 	end
@@ -72,6 +82,11 @@ end
 		return false;
 	end
 	function enm.update(self, dt)
+		if self.health <= 0 then
+			Combat_lock = false;
+			self.parent:discard();
+			Music:swap(Music.menu);
+		end
 	end
 	return enm;
 end

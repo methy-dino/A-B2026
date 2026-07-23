@@ -35,10 +35,9 @@ function Drawers.draw_upper_interface(references)
 	love.graphics.setColor(0, 255, 0);
 	local hp_width = math.ceil(width/3);
 	local hp_height = math.ceil(height/3);
-	local hp_start_x = start_x + width/10;
-	local hp_start_y = height/2-hp_height/2;
 	Drawers.life_bar.x = playable_bounds.hud.left + 3*pixel_size;
 	Drawers.life_bar.y = playable_bounds.hud.top + 3*pixel_size;
 	Drawers.life_bar:draw(Player.character.maxHealth, Player.character.health, Player.character.shield);
+		love.graphics.print(Player.character.health.."/"..Player.character.maxHealth, playable_bounds.hud.left + 3*pixel_size, Drawers.life_bar.y+hp_height);
 end
 return Drawers;

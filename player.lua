@@ -44,13 +44,14 @@ function Player.init(class)
 	local targets2 = {};
 	targets2.length = 1;
 	targets2[1] = "player";
-	 faces_tst = Dice_utils.new_face_arr(4, 1, Quirks.reroll_subquirk(Quirks.single_use_damage(targets),1), 2, Quirks.reroll_subquirk(Quirks.single_use_damage(targets),1), 9, Quirks.single_use_damage(targets), 12, Quirks.single_use_damage(targets));
+	 faces_tst = Dice_utils.new_face_arr(4, 10, Quirks.reroll_subquirk(Quirks.single_use_damage(targets),1), 10, Quirks.reroll_subquirk(Quirks.single_use_damage(targets),1), 10, Quirks.single_use_damage(targets), 12, Quirks.single_use_damage(targets));
    local dadopng = love.graphics.newImage("dado.png");
 	 local dado_teste = Dice_utils.new_die(faces_tst, Initializer.new_color(1,1,1), dadopng);
 	 local dado_teste2 = Dice_utils.new_die(Dice_utils.new_face_arr(2, 2, Quirks.reroll_subquirk(Quirks.basic_shield(targets2),1), 3, Quirks.basic_shield(targets2), 1), Initializer.new_color(1,1,1), dadopng);
 	 Player.character.inventory.dice[1] = dado_teste;
-	 Player.character.inventory.dice[2] = dado_teste3;
 	 Player.character.inventory.dice[2] = dado_teste2;
+	 dado_teste2.owner = Player.character;
+	 dado_teste.owner = Player.character;
 	function Player.character.inventory.interface.draw()
 		love.graphics.setColor(255, 255, 255);
 		local start_x = playable_bounds.arena.left;
@@ -58,6 +59,9 @@ function Player.init(class)
 		local height = (playable_bounds.arena.bottom-playable_bounds.arena.top)/4;
 		local start_y= playable_bounds.arena.bottom - height;
 		love.graphics.rectangle("fill", start_x, start_y, width, height);
+	end
+	function Player.character.inventory.interface.answer_key_down(self, key)
+		return false;
 	end
 	function Player.character.inventory.interface.answer_mouse_down()
 		return false;
@@ -92,6 +96,9 @@ end
 	end
 end
 
+	function Player.character.answer_key_down(self, key)
+		return false;
+	end
 	function Player.character.answer_mouse_up(self, x, y, button)
 	return false;
 end

@@ -7,10 +7,11 @@ Scheduler = require("scheduler");
 Initializer = require("initializers");
 Quirks = require("quirks");
 Enemy = require("enemy");
+Music = require("music");
 Combat_lock = false;
 Drawers = require("drawers");
 function love.load()
-math.randomseed(os.time())
+		math.randomseed(os.time())
 		love.graphics.setDefaultFilter("nearest", "nearest")
    image = love.graphics.newImage("cobble.jpg")
 	 root_scheduler = Initializer.game_init();
@@ -19,6 +20,7 @@ end
 
 
 function love.update(dt)
+	Music:update(dt);
 	root_scheduler:update(dt);
 end
 
@@ -49,4 +51,5 @@ function love.keypressed(key)
 		reset_die.type = "reset";
 		root_scheduler:message(reset_die, "");
 	end
+	root_scheduler:answer_key_down(key);
 end

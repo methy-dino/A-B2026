@@ -55,9 +55,9 @@ function Quirks.vampirism_subquirk(quirk, uses)
 	function curr.activate(self, face, dice, quirk)	
 		if self.uses > 0 and dice.spent == true then
 			self.uses = self.uses - 1;
-			Player.character.health = Player.character.health + math.ceil(face.value/2);
-			if Player.character.health > Player.character.maxHealth then
-				Player.character.health = Player.character.maxHealth 
+			dice.owner.health = dice.owner.health + math.ceil(face.value/2);
+			if dice.owner.health > dice.owner.maxHealth then
+				dice.owner.health = dice.owner.health
 			end
 		end
 	end
@@ -266,7 +266,7 @@ Quirks.quirks[1] = Quirks.basic_damage;
 Quirks.quirks[2] = Quirks.single_use_damage;
 Quirks.quirks[3] = Quirks.basic_shield;
 Quirks.subquirks = {};
- Quirks.subquirks.length = 2;
+ Quirks.subquirks.length = 1;
 Quirks.subquirks[1] = Quirks.reroll_subquirk;
-Quirks.subquirks[2] = Quirks.vampirism_subquirk;
+--Quirks.subquirks[2] = Quirks.vampirism_subquirk;
 return Quirks;
